@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        h1{
+    text-align: center;
+    
+}
+
+body {
+    background-color:#222222; /* Light gray background color */
+    padding: 20px; /* Add some padding */
+}
+
+#urlForm {
+        /* margin-bottom: 40px; */
+    position: relative;
+    left: 33%;
+    margin-top: 2%;
+}
+
+#URL{
+    color: #eb6864;
+    position: relative;
+    left: 2%;
+    font-size: 100px;
+    margin-top: 3%;
+}
+
+#shortenedUrl{
+    color: #eb6864;
+    position: absolute;
+    left: 40%;
+    top: 30%;
+}
+    </style>
+    
+</head>
+<body>
+    <h1 style="color: #eb6864;" id="URL">URL Shortener</h1>
+    <form id="urlForm" style="color: #eb6864;">
+        <label for="originalUrl">Enter URL to shorten:</label>
+        <input type="text" id="originalUrl" name="originalUrl" required>
+        <button type="submit" style="background-color: #aaaaaa;">Shorten URL</button>
+    </form>
+
+    <div id="shortenedUrl" style="color: #eb6864;"></div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const form = document.getElementById('urlForm');
+        const shortenedUrlDiv = document.getElementById('shortenedUrl');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission behavior
+            const formData = new FormData(form);
+            const originalUrl = formData.get('originalUrl');
+
+            try {
+                console.log('Submitting form with URL:', originalUrl); // Check the original URL being submitted
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ originalUrl })
+                });
+
+                const data = await response.json();
+                console.log('Response data:', data); // Log the response data
+                shortenedUrlDiv.innerHTML = `Shortened URL: <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+            } catch (error) {
+                console.error('Error shortening URL:', error);
+                shortenedUrlDiv.innerHTML = 'Error shortening URL';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
